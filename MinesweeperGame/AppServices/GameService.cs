@@ -30,9 +30,15 @@ namespace MinesweeperGame.AppServices
                     minefields[x, y] = new Minefield(new Coordinates(x,y));
                 }
             }
-                
+
+            return new Mineboard(GetBombInitializedMinefields(minefields), _size, _bombsAmount);
+        }
+
+        private Minefield[,] GetBombInitializedMinefields(Minefield[,] minefields)
+        {
+            var tmpBombAmount = _bombsAmount;
             var rand = new Random();
-            for(int i = 0; i < 10; i++)
+            while (tmpBombAmount != 0)
             {
                 var x = rand.Next(0, _size);
                 var y = rand.Next(0, _size);
@@ -41,11 +47,10 @@ namespace MinesweeperGame.AppServices
                 {
                     minefields[x, y].HasMine = true;
                     minefields = GetSurroundingMinefieldsIncremented(minefields, x, y);
+                    tmpBombAmount--;
                 }
             }
-
-
-            return new Mineboard(minefields, _size, _bombsAmount);
+            return minefields;
         }
 
         private Minefield[,] GetSurroundingMinefieldsIncremented(Minefield[,] minefields, int x, int y)
